@@ -37,7 +37,7 @@ const createWeatherCart = (cityName, weather, index) => {
 };
 
 const getWeatherDetails = async (cityName, lat, lon) => {
-  const weather_api_url = `http://api.openweathermap.org/data/2.5/forecast/?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+  const weather_api_url = `https://api.openweathermap.org/data/2.5/forecast/?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
 
   try {
 
@@ -76,7 +76,7 @@ const getWeatherDetails = async (cityName, lat, lon) => {
 const getCity = async () => {
   const cityName = cityInput.value.trim();
   if (!cityName) return;
-  const GEOCODING_API_URL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`;
+  const GEOCODING_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`;
 
   try {
 
@@ -101,7 +101,7 @@ const getUserLocation = async () => {
 
     console.log(position);
     const { latitude, longitude } = position.coords;
-    const url = `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=&appid=${API_KEY}`;
+    const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=&appid=${API_KEY}`;
 
     const res = await fetch(url);
     const data = await res.json();
