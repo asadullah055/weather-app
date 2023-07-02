@@ -5,6 +5,23 @@ const weatherCard = document.querySelector(".weather-cards");
 const currentWeather = document.querySelector(".current-weather");
 const API_KEY = "77b8fd1ea5375ece87f600bb82a91fb6";
 
+const alphaOnlyPattern = new RegExp("^[a-zA-Z ]+$");
+
+let previousValue = "";
+
+cityInput.addEventListener("input", (e) => {
+  if (
+    e.inputType.includes("delete") ||
+    alphaOnlyPattern.test(cityInput.value)
+  ) {
+    previousValue = cityInput.value;
+  } else {
+    alert("Wrong Input");
+  }
+
+  cityInput.value = previousValue;
+});
+
 const createWeatherCart = (cityName, weather, index) => {
   if (index === 0) {
     return `<div class="details">
@@ -15,8 +32,9 @@ const createWeatherCart = (cityName, weather, index) => {
             </div>
             <div class="icon">
               <img
-              src="https://openweathermap.org/img/wn/${weather.weather[0].icon
-      }@2x.png"
+              src="https://openweathermap.org/img/wn/${
+                weather.weather[0].icon
+              }@2x.png"
               alt="weather-img"
               />
               <h4>${weather.weather[0].description}</h4>
@@ -25,8 +43,9 @@ const createWeatherCart = (cityName, weather, index) => {
     return `<li class="card">
               <h3>(${weather.dt_txt.split(" ")[0]})</h3>
               <img
-                src="https://openweathermap.org/img/wn/${weather.weather[0].icon
-      }@2x.png"
+                src="https://openweathermap.org/img/wn/${
+                  weather.weather[0].icon
+                }@2x.png"
                 alt="weather-img"
               />
               <h4>Temperature: ${(weather.main.temp - 273.15).toFixed()}°C</h4>
@@ -40,9 +59,8 @@ const getWeatherDetails = async (cityName, lat, lon) => {
   const weather_api_url = `https://api.openweathermap.org/data/2.5/forecast/?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
 
   try {
-
     const res = await fetch(weather_api_url);
-    const data = await res.json()
+    const data = await res.json();
 
     const uniqueForecastDays = [];
     const fiveDaysForecast = data.list.filter((forecast) => {
@@ -58,16 +76,11 @@ const getWeatherDetails = async (cityName, lat, lon) => {
 
     fiveDaysForecast.forEach((weather, index) => {
       if (index === 0) {
-        currentWeather.innerHTML += createWeatherCart(
-          cityName,
-          weather,
-          index
-        );
+        currentWeather.innerHTML += createWeatherCart(cityName, weather, index);
       } else {
         weatherCard.innerHTML += createWeatherCart(cityName, weather, index);
       }
     });
-
   } catch (error) {
     console.log(error);
   }
@@ -79,24 +92,20 @@ const getCity = async () => {
   const GEOCODING_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`;
 
   try {
-
-    const res = await fetch(GEOCODING_API_URL)
-    const data = await res.json()
+    const res = await fetch(GEOCODING_API_URL);
+    const data = await res.json();
 
     if (!data.length) return alert(`${cityName} not found`);
     const { name, lat, lon } = data[0];
     await getWeatherDetails(name, lat, lon);
-
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-
 };
 const getUserLocation = async () => {
-
   try {
     const position = await new Promise((resolved, reject) => {
-      navigator.geolocation.getCurrentPosition(resolved, reject)
+      navigator.geolocation.getCurrentPosition(resolved, reject);
     });
 
     console.log(position);
@@ -107,7 +116,6 @@ const getUserLocation = async () => {
     const data = await res.json();
     const { name } = data[0];
     await getWeatherDetails(name, latitude, longitude);
-
   } catch (error) {
     if (error.code === error.PERMISSION_DENIED) {
       alert(
@@ -115,9 +123,8 @@ const getUserLocation = async () => {
       );
     }
   }
-
 };
 
 locationBtn.addEventListener("click", getUserLocation);
 searchBtn.addEventListener("click", getCity);
-cityInput.addEventListener("keyup", e => e.key === 'Enter' && getCity());
+cityInput.addEventListener("keyup", (e) => e.key === "Enter" && getCity());
